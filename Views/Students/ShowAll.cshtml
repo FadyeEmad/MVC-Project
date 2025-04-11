@@ -1,4 +1,6 @@
 ﻿@model List<Students>
+
+    <a href="/Students/Add" class="btn btn-success mt-3 mb-3">New</a>
 <table class="table table-hover table-bordered">
     <tr>
         <th>Number</th>
@@ -13,6 +15,10 @@
             <td>@item.Name</td>
             <td>@item.Age</td>
             <td>@item.Departmentid</td>
+            <td>
+                <a href="/Students/Delete" class="btn btn-success">Delete</a>
+            </td>
+
         </tr>
     }
 </table>

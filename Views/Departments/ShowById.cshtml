@@ -1,0 +1,42 @@
+﻿@model Departments
+@{
+    ViewData["Title"] = "ShowById";
+}
+
+<h1>ShowById</h1>
+
+<br />
+<table class="table table-hover table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Manager Name</th>
+        <th>Departmentid</th>
+        <th>students</th>
+        <th>department state</th>
+    </tr>
+    {
+        <td>@Model.Name</td>
+        <td>@Model.MgrName</td>
+        <td>@Model.Id</td>
+        <td>
+            <select class="form form-control">
+                @foreach (var student in Model.Students)
+                {
+                    <option>@student.Name</option>
+                }
+            </select>
+        </td>
+    <td>
+        @if (Model.Students.Count() >= 50)
+        {
+            <p>Main</p>
+        }
+        else
+        {
+            <p>branch</p>
+        }
+    </td>
+
+    }
+   
+

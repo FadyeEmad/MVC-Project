@@ -1,0 +1,56 @@
+﻿@model DepatmentsWithStudentsInfo
+@{
+    ViewData["Title"] = "ShowAll";
+}
+
+<h1>ShowAll</h1>
+
+<table class="table table-hover table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Manager Name</th>
+        <th>Departmentid</th>
+        <th>students</th>
+        <th>department state</th>
+    </tr>
+   @*  @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.MgrName</td>
+            <td>@item.Id</td>
+        </tr>
+    } *@
+    
+    @foreach (var item in Model.Departments)
+    {<tr>
+       <td><option>@item.Name</option></td>
+       <td><option>@item.MgrName</option></td>
+            <td><option>@item.Id</option></td>
+            <td>
+            <select class="form form-control">
+                    @foreach (var student in item.Students)
+                    {
+                        if(student.Age > 25)
+                        {
+                        <option>Name = @student.Name / Age = @student.Age</option>
+                        }
+                    }
+                    </select>
+            </td>
+            <td>
+                @if (item.Students.Count() >=50 )
+                {
+                    <p>Main</p>
+                }
+                else
+                {
+                    <p>branch</p>
+                }
+            </td>
+       </tr>
+    }
+        
+
+    
+  

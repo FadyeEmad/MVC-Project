@@ -1,0 +1,23 @@
+﻿@model Students
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add Student</h1>
+<form method="post" action="/Students/SaveAdd">
+
+    <div>
+        <label>Name</label>
+        <input id="Name" name="Name" value="@Model?.Name" class="form form-control"/>
+    </div>
+    <div>
+        <label>Age</label>
+        <input id="Age" name="Age" value="@Model?.Age" class="form form-control" />
+    </div>
+    <div>
+        <label>Departmentid</label>
+        <input id="Departmentid" name="Departmentid" value="@Model?.Departmentid" class="form form-control" />
+    </div>
+    <input type="submit" value="Create" class="btn btn-primary"/>
+</form>
+<a href="/Students/ShowAll"> Back To List</a>

@@ -5,11 +5,21 @@
         <th>Name</th>
         <th>Age</th>
         <th>Departmentid</th>
+        <th>states</th>
+        <th>Rate</th>
     </tr>
-        <tr>
-        <td>@Model.Id</td>
-        <td>@Model.Name</td>
-        <td>@Model.Age</td>
-        <td>@Model.Departmentid</td>
-        </tr>
+    <tr>
+         <td>@Model.Id</td>
+         <td>@Model.Name</td>
+         <td>@Model.Age</td>
+         <td>@Model.Departmentid</td>
+         <td>@ViewData["status"]</td>
+         <td>@(ViewBag.Rate+10) </td>
+     </tr>
 </table>
+     <select class="form form-control">
+        @foreach(var item in ViewBag.Skills)
+        {
+            <option>@item</option>
+        }
+    </select>

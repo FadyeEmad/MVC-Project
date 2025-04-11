@@ -1,0 +1,17 @@
+﻿@model StudentWithMoreInfoViewModel
+@{
+    ViewData["Title"] = "DetailsVW";
+}
+
+<h1>DetailsVW</h1>
+<br />
+<h2>@Model.StudentName</h2>
+<h2>@Model.DeptName</h2>
+<h2>@Model.Rate</h2>
+<h2>@Model.Status</h2>
+<select class="form form-control">
+    @foreach (var item in Model.Skills)
+    {
+        <option>@item</option>
+    }
+</select>

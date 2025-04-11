@@ -14,5 +14,6 @@ namespace MVC_Project.Models
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         public DbSet<Students> Students { get; set; }
+        public DbSet<Departments> Departments { get; set; }
     }
 }
