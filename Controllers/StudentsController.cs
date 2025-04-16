@@ -6,13 +6,50 @@ namespace MVC_Project.Controllers
 {
     public class StudentsController : Controller
     {
+        DepartmentsBL departmentsBL = new DepartmentsBL();
             StudentsBL studentsBL = new StudentsBL();
+        SystemDbContext context = new SystemDbContext();
         //Students/ShowAll
-        public IActionResult ShowAll()
+        //public IActionResult ShowAll()
+        //{
+        //    List<Students> ListOfStudents = studentsBL.GetAll();
+        //    return View("ShowAll" , ListOfStudents);
+        //}
+        public IActionResult ShowAll(string? searchName, int? departmentId, int page = 1)
         {
-            List<Students> ListOfStudents = studentsBL.GetAll();
-            return View("ShowAll" , ListOfStudents);
+            int pageSize = 5;
+            var allStudents = studentsBL.GetAll();
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                allStudents = allStudents
+                    .Where(s => s.Name.ToLower().Contains(searchName.ToLower()))
+                    .ToList();
+            }
+            if (departmentId != null && departmentId > 0)
+            {
+                allStudents =allStudents
+                    .Where(s=>s.Departmentid == departmentId)
+                    .ToList();
+            } 
+            int TotalStudents = allStudents
+                .Count();
+            var StudentsOnPage = allStudents
+                .Skip((page-1)*pageSize)
+                .Take(pageSize)
+                .ToList();
+            StudentFilterViewModel SF = new StudentFilterViewModel()
+            {
+                Students = StudentsOnPage,
+                SearchName = searchName,
+                DepartmentId = departmentId,
+                Departments = departmentsBL.GetAll(),
+                CurrentPage = page,
+                TotalPages = (int)Math.Ceiling((double)TotalStudents / pageSize)
+            };
+            return View("ShowAll",SF);
+                
         }
+
         //Students/ShowDetailsWM?id=1
         public IActionResult ShowDetails(int id)
         {
@@ -43,23 +80,60 @@ namespace MVC_Project.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            return View("Add");
+            StudentWithDepartmentsList SWDT = new StudentWithDepartmentsList();
+            List<Departments> DepartmentsList = departmentsBL.GetAll();
+            SWDT.DepartmentLiat = DepartmentsList;
+            return View("Add" ,SWDT);
         }
         [HttpPost]
         public IActionResult SaveAdd(Students StudentFromReq)
         {
-            if(StudentFromReq.Name != null && StudentFromReq.Age != 0)
+            if(StudentFromReq.Name != null && StudentFromReq.Age != 0 )
             {
-                studentsBL.Add(StudentFromReq);
+                studentsBL.SaveAdd(StudentFromReq);
                return RedirectToAction(nameof(ShowAll));
             }
             return View("Add" , StudentFromReq);
         }
-        //public IActionResult Delete(Students StudentFromReq)
-        //{
-        //    studentsBL.Delete(StudentFromReq);
-        //    return RedirectToAction(nameof(ShowAll));
+        public IActionResult Delete(Students StudentFromReq)
+        {
+            studentsBL.SaveDelete(StudentFromReq);
+            return RedirectToAction(nameof(ShowAll));
+        }
+        public IActionResult Edit(int id)
+        {
+            StudentWithDepartmentsList SWDT = new StudentWithDepartmentsList();
+            Students oldstudent = studentsBL.GetById(id);
+            List<Departments> DepartmentsList = departmentsBL.GetAll() ;
+            SWDT.Age = oldstudent.Age;
+            SWDT.Name = oldstudent.Name;
+            SWDT.Department = oldstudent.Department;
+            SWDT.Departmentid = oldstudent.Departmentid;
+            SWDT.StuCrsRes = oldstudent.StuCrsRes;
+            SWDT.Id = oldstudent.Id;
+            SWDT.DepartmentLiat = DepartmentsList;
 
-        //}
+            return View("Edit" , SWDT);
+        }
+        public IActionResult SaveEdit (StudentWithDepartmentsList StudentFromReq , int id)
+        {
+            if (StudentFromReq.Name != null)
+            {
+                Students EditStudent = studentsBL.GetById(id);
+                EditStudent.Name = StudentFromReq.Name;
+                EditStudent.Age = StudentFromReq.Age;
+                EditStudent.Departmentid = StudentFromReq.Departmentid;
+                studentsBL.SaveEdit(EditStudent);
+                return RedirectToAction(nameof(ShowAll));
+            }
+            List<Departments> DepartmentsList = departmentsBL.GetAll();
+            StudentFromReq.DepartmentLiat = DepartmentsList;
+            return View("Edit", StudentFromReq);
+        }
+        public IActionResult WarningDelete (int id)
+        {
+            Students DeleteStudent = studentsBL.GetById(id);
+            return View("WarningDelete", DeleteStudent);
+        }
     }
 }

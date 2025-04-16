@@ -11,7 +11,7 @@ namespace MVC_Project.Controllers
         public IActionResult ShowAll()
         {
             
-            DepatmentsWithStudentsInfo DpStudents = departmentsBL.GetAll();
+            DepatmentsWithStudentsInfo DpStudents = departmentsBL.GetAllWithStudents();
             //DpStudents.Departments = DeparmentsList;
             //DpStudents.Students=studentsBL.GetAll();
             return View("ShowAll", DpStudents);

@@ -1,14 +1,36 @@
-﻿@model List<Students>
+﻿@model StudentFilterViewModel
 
     <a href="/Students/Add" class="btn btn-success mt-3 mb-3">New</a>
+
+    <form method="get" asp-action="ShowAll" class="mb-3">
+    <input type="text" name="searchName" value="@Model.SearchName" placeholder="Search by name" class="form-control d-inline w-25" />
+    
+    <select name="departmentId" class="form-control d-inline w-25">
+        <option value="">All Departments</option>
+        @foreach (var dept in Model.Departments)
+        {
+            if (dept.Id == Model.DepartmentId)
+            {
+                <option value="@dept.Id" selected>@dept.Name</option>
+
+            }
+            else
+            {
+            <option value="@dept.Id" >@dept.Name</option>    
+            }
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
 <table class="table table-hover table-bordered">
     <tr>
-        <th>Number</th>
+        <th>Id</th>
         <th>Name</th>
         <th>Age</th>
         <th>Departmentid</th>
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Students)
     {
         <tr>
             <td>@item.Id</td>
@@ -16,9 +38,22 @@
             <td>@item.Age</td>
             <td>@item.Departmentid</td>
             <td>
-                <a href="/Students/Delete" class="btn btn-success">Delete</a>
+                <a href="/Students/WarningDelete/@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+            <td>
+                <a href="/Students/Edit/@item.Id" class="btn btn-success">Edit</a>
             </td>
 
         </tr>
     }
 </table>
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                <a class="page-link" href="?searchName=@Model.SearchName&departmentId=@Model.DepartmentId&page=@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

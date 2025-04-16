@@ -6,22 +6,28 @@ namespace MVC_Project.Models
     public class DepartmentsBL
     {
         SystemDbContext context = new SystemDbContext();
-                    DepatmentsWithStudentsInfo DbStudents = new DepatmentsWithStudentsInfo();
+        DepatmentsWithStudentsInfo DbStudents = new DepatmentsWithStudentsInfo();
 
-        public DepatmentsWithStudentsInfo GetAll()
+        public List<Departments> GetAll()
         {
-           List <Departments> DepartmentsList = context.Departments.ToList();
+            List<Departments> DepartmentsList = context.Departments.ToList();
+            return DepartmentsList;
+        }
+        public DepatmentsWithStudentsInfo GetAllWithStudents()
+        {
+            List<Departments> DepartmentsList = context.Departments.ToList();
             List<Students> studentsList = context.Students.ToList();
             DbStudents.Students = studentsList;
             DbStudents.Departments = DepartmentsList;
-         return DbStudents;
+            return DbStudents;
         }
         public Departments GetById(int id)
         {
             Departments department = context.Departments.FirstOrDefault(x => x.Id == id);
-            List<Students> studentsList = context.Students.Where(D=>D.Departmentid==id).ToList();
-            department.Students= studentsList;
+            List<Students> studentsList = context.Students.Where(D => D.Departmentid == id).ToList();
+            department.Students = studentsList;
             return department;
         }
     }
 }
+

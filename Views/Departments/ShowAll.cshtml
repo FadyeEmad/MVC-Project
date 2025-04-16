@@ -31,7 +31,7 @@
             <select class="form form-control">
                     @foreach (var student in item.Students)
                     {
-                        if(student.Age > 25)
+                        if(student.Age > 0)
                         {
                         <option>Name = @student.Name / Age = @student.Age</option>
                         }

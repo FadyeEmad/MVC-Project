@@ -1,4 +1,4 @@
-﻿@model Students
+﻿@model StudentWithDepartmentsList
 @{
     ViewData["Title"] = "Add";
 }
@@ -16,7 +16,12 @@
     </div>
     <div>
         <label>Departmentid</label>
-        <input id="Departmentid" name="Departmentid" value="@Model?.Departmentid" class="form form-control" />
+        <select id="Departmentid" name="Departmentid" class="form form-control">
+            @foreach (var item in Model.DepartmentLiat)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
     </div>
     <input type="submit" value="Create" class="btn btn-primary"/>
 </form>
