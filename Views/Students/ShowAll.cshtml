@@ -1,10 +1,24 @@
 ﻿@model StudentFilterViewModel
-
+@{
+    Layout = "NewLayout";
+}
     <a href="/Students/Add" class="btn btn-success mt-3 mb-3">New</a>
 
     <form method="get" asp-action="ShowAll" class="mb-3">
     <input type="text" name="searchName" value="@Model.SearchName" placeholder="Search by name" class="form-control d-inline w-25" />
-    
+     <select name="pageSize" class="form form-control d-inline w-25">
+    @for (int? num = 5; num <= Model.StudentsCount; num += 5)
+    {
+                if(@num == Model.SelectedPageSize)
+                {
+                    <option value="@num" selected>@num</option>
+                }
+                if(num!=Model.SelectedPageSize){
+                <option value="@num" >@num</option>  
+                }
+                
+    }
+    </select>
     <select name="departmentId" class="form-control d-inline w-25">
         <option value="">All Departments</option>
         @foreach (var dept in Model.Departments)
@@ -28,7 +42,8 @@
         <th>Id</th>
         <th>Name</th>
         <th>Age</th>
-        <th>Departmentid</th>
+        <th>Department</th>
+        <th>Courses</th>
     </tr>
     @foreach (var item in Model.Students)
     {
@@ -52,7 +67,7 @@
         @for (int i = 1; i <= Model.TotalPages; i++)
         {
             <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                <a class="page-link" href="?searchName=@Model.SearchName&departmentId=@Model.DepartmentId&page=@i">@i</a>
+                <a class="page-link" href="?searchName=@Model.SearchName&departmentId=@Model.DepartmentId&pageSize=@Model.SelectedPageSize&page=@i">@i</a>
             </li>
         }
     </ul>

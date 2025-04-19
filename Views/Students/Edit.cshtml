@@ -5,21 +5,23 @@
 
 <h1>Edit</h1>
 
-<form method="post" action="/Students/SaveEdit/@Model.Id">
+<form method="post" asp-action="SaveEdit" asp-controller="Students" asp-route-id="@Model.Id">
     <div>
         @* <label>Name</label>
         <input type="text" value="@Model.Name" id="Name" name="Name" class="form form-control" /> *@
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
-        <label>Age</label>
-        <input type="number" value="@Model.Age" id="Age" name="Age" class="form form-control" />
+        <label asp-for="Age">Age</label>
+        <input asp-for="Age" class="form form-control" />
+        <span asp-validation-for="Age" class="text-danger"></span>
     </div>
     <div>
-        <label>Departmentid</label>
-        <select id="Departmentid" name="Departmentid" class="form form-control">
-            @foreach (var item in Model.DepartmentLiat)
+        <label asp-for="Departmentid">Department</label>
+        <select asp-for="Departmentid" class="form form-control">
+            @foreach (var item in Model.DepartmentList)
             {
                 if(@item.Id==Model.Departmentid)
                 {

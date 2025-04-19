@@ -1,28 +1,31 @@
 ﻿@model StudentWithDepartmentsList
 @{
-    ViewData["Title"] = "Add";
+ ViewData["Title"] = "Add";
 }
-
 <h1>Add Student</h1>
-<form method="post" action="/Students/SaveAdd">
-
+<form method="post" asp-action="SaveAdd" asp-controller="Students">
+    
     <div>
-        <label>Name</label>
-        <input id="Name" name="Name" value="@Model?.Name" class="form form-control"/>
+        <label asp-for="Name" >Full Name</label>
+        <input asp-for="Name" class="form form-control" style="width :200px ; background-color :seashell" />
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div>
-        <label>Age</label>
-        <input id="Age" name="Age" value="@Model?.Age" class="form form-control" />
+        <label asp-for="Age">Age</label>
+        <input asp-for="Age" class="form form-control" style="width :70px ; background-color :seashell" />
+        <span asp-validation-for="Age" class="text-danger"></span>
     </div>
     <div>
-        <label>Departmentid</label>
-        <select id="Departmentid" name="Departmentid" class="form form-control">
-            @foreach (var item in Model.DepartmentLiat)
+        <label asp-for="Departmentid">Department</label>
+        <select asp-for="Departmentid" class="form form-control" style="width :200px ; background-color :seashell">
+            <option >Select Department</option>
+            @foreach (var item in Model.DepartmentList)
             {
                 <option value="@item.Id">@item.Name</option>
             }
         </select>
+        <span asp-validation-for="Departmentid" class="text-danger"> </span>
     </div>
     <input type="submit" value="Create" class="btn btn-primary"/>
 </form>
-<a href="/Students/ShowAll"> Back To List</a>
+<a asp-action="ShowAll" asp-controller="Students"> Back To List</a>

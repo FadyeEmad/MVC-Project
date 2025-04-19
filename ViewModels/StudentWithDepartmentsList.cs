@@ -16,6 +16,6 @@ namespace MVC_Project.ViewModels
         public Departments? Department { get; set; }
         [ForeignKey("Departments")]
         public int Departmentid { get; set; }
-        public List<Departments> DepartmentLiat { get; set; }
+        public List<Departments> DepartmentList { get; set; }
     }
 }

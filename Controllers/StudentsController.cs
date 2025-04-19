@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MVC_Project.Models;
 using MVC_Project.ViewModels;
 
@@ -15,9 +16,9 @@ namespace MVC_Project.Controllers
         //    List<Students> ListOfStudents = studentsBL.GetAll();
         //    return View("ShowAll" , ListOfStudents);
         //}
-        public IActionResult ShowAll(string? searchName, int? departmentId, int page = 1)
+        public IActionResult ShowAll(string? searchName, int? departmentId, int? pageSize, int page = 1)
         {
-            int pageSize = 5;
+            int finalPageSize = pageSize ?? 10;
             var allStudents = studentsBL.GetAll();
             if (!string.IsNullOrEmpty(searchName))
             {
@@ -34,8 +35,8 @@ namespace MVC_Project.Controllers
             int TotalStudents = allStudents
                 .Count();
             var StudentsOnPage = allStudents
-                .Skip((page-1)*pageSize)
-                .Take(pageSize)
+                .Skip((page-1)* finalPageSize)
+                .Take(finalPageSize)
                 .ToList();
             StudentFilterViewModel SF = new StudentFilterViewModel()
             {
@@ -44,7 +45,9 @@ namespace MVC_Project.Controllers
                 DepartmentId = departmentId,
                 Departments = departmentsBL.GetAll(),
                 CurrentPage = page,
-                TotalPages = (int)Math.Ceiling((double)TotalStudents / pageSize)
+                StudentsCount= TotalStudents,
+                SelectedPageSize = finalPageSize,
+                TotalPages = (int)Math.Ceiling((double)TotalStudents / finalPageSize)
             };
             return View("ShowAll",SF);
                 
@@ -82,22 +85,41 @@ namespace MVC_Project.Controllers
         {
             StudentWithDepartmentsList SWDT = new StudentWithDepartmentsList();
             List<Departments> DepartmentsList = departmentsBL.GetAll();
-            SWDT.DepartmentLiat = DepartmentsList;
+            SWDT.DepartmentList = DepartmentsList;
             return View("Add" ,SWDT);
         }
         [HttpPost]
         public IActionResult SaveAdd(Students StudentFromReq)
         {
-            if(StudentFromReq.Name != null && StudentFromReq.Age != 0 )
+            //Students student =new Students();
+            //student.StuCrsRes=StudentFromReq.StuCrsRes;
+            //student.Age = StudentFromReq.Age;
+            //student.Name = StudentFromReq.Name;
+            //student.Departmentid = StudentFromReq.Departmentid;
+
+            if (ModelState.IsValid== true)
             {
                 studentsBL.SaveAdd(StudentFromReq);
                return RedirectToAction(nameof(ShowAll));
             }
-            return View("Add" , StudentFromReq);
+            var departments = departmentsBL.GetAll();
+            StudentWithDepartmentsList ReturnStudent = new StudentWithDepartmentsList
+            {
+                //Students student =new Students();
+                StuCrsRes = StudentFromReq.StuCrsRes,
+                Age = StudentFromReq.Age,
+                Name = StudentFromReq.Name,
+                Departmentid = StudentFromReq.Departmentid,
+                DepartmentList = departments,
+
+            };
+            return View("Add" , ReturnStudent);
         }
         public IActionResult Delete(Students StudentFromReq)
         {
             studentsBL.SaveDelete(StudentFromReq);
+            int maxId = context.Departments.Any() ? context.Departments.Max(d => d.Id) : 0;
+            context.Database.ExecuteSqlRaw($"DBCC CHECKIDENT ('Students', RESEED, {maxId})");
             return RedirectToAction(nameof(ShowAll));
         }
         public IActionResult Edit(int id)
@@ -111,7 +133,7 @@ namespace MVC_Project.Controllers
             SWDT.Departmentid = oldstudent.Departmentid;
             SWDT.StuCrsRes = oldstudent.StuCrsRes;
             SWDT.Id = oldstudent.Id;
-            SWDT.DepartmentLiat = DepartmentsList;
+            SWDT.DepartmentList = DepartmentsList;
 
             return View("Edit" , SWDT);
         }
@@ -127,7 +149,7 @@ namespace MVC_Project.Controllers
                 return RedirectToAction(nameof(ShowAll));
             }
             List<Departments> DepartmentsList = departmentsBL.GetAll();
-            StudentFromReq.DepartmentLiat = DepartmentsList;
+            StudentFromReq.DepartmentList = DepartmentsList;
             return View("Edit", StudentFromReq);
         }
         public IActionResult WarningDelete (int id)

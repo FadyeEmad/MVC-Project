@@ -1,17 +1,16 @@
 ﻿@model DepatmentsWithStudentsInfo
 @{
-    ViewData["Title"] = "ShowAll";
+    Layout = "NewLayout";
 }
-
-<h1>ShowAll</h1>
+<a href="/Departments/Add" class="btn btn-success mt-3 mb-3">New</a>
 
 <table class="table table-hover table-bordered">
-    <tr>
+    <tr style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
         <th>Name</th>
         <th>Manager Name</th>
-        <th>Departmentid</th>
-        <th>students</th>
-        <th>department state</th>
+        <th>Department</th>
+        <th>Students</th>
+        <th>Department state</th>
     </tr>
    @*  @foreach (var item in Model)
     {
@@ -31,15 +30,16 @@
             <select class="form form-control">
                     @foreach (var student in item.Students)
                     {
+                       
                         if(student.Age > 0)
                         {
-                        <option>Name = @student.Name / Age = @student.Age</option>
+                        <option> @student.Name </option>
                         }
                     }
                     </select>
             </td>
             <td>
-                @if (item.Students.Count() >=50 )
+                @if (item.Students.Count() >=10 )
                 {
                     <p>Main</p>
                 }
@@ -47,6 +47,12 @@
                 {
                     <p>branch</p>
                 }
+            </td>
+            <td>
+                <a href="/Departments/WarningDelete/@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+            <td>
+                <a href="/Departments/Edit/@item.Id" class="btn btn-success">Edit</a>
             </td>
        </tr>
     }

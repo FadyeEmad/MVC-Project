@@ -1,0 +1,37 @@
+﻿@model Departments
+@{
+    ViewData["Title"] = "WarningDelete";
+}
+
+<h1 style="color : red">WarningDelete</h1>
+
+<div>
+    <h4>Departament</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MgrName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MgrName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="SaveDelete" asp-controller="Departments" asp-route-id="@Model.Id" class="btn btn-danger">Confrem Delete</a>
+    <a asp-action="Edit" asp-controller="Departments" asp-route-id="@Model.Id" class="btn btn-success">Edit</a>
+    <a asp-action="ShowAll" asp-controller="Departments" class="btn btn-dark">Back</a>
+</div>

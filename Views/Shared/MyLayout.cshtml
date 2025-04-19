@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div style="height =200px; background-color:beige; font-size:40px;">@RenderSection("Header")</div>
+    <div>
+        @RenderBody()
+    </div>
+    <div style="height =200px; background-color:beige; font-size:40px;"> @RenderSection("Footer") </div>
+</body>
+</html>
