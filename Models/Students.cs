@@ -8,9 +8,10 @@ namespace MVC_Project.Models
         public int Id { get; set; }
         [Required]
         [StringLength(30)]
-        [MinLength(2)]
+        [MinLength(2)]  
         [RegularExpression(@"^[A-Za-z\s]+$")]
         [Display(Name = "Full Name")]
+        [UniqueName (ErrorMessage ="Name Must Be Unique")]
         public string Name { get; set; }
 
         [Required]

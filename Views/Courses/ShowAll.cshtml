@@ -1,0 +1,76 @@
+﻿@model CourseWithStudentViewModel
+@{
+    Layout = "NewLayout";
+}
+
+<a href="/Courses/Add" class="btn btn-success mt-3 mb-3">New</a>
+
+<form method="get" asp-action="ShowAll" class="mb-3">
+    <input type="text" name="searchName" value="@Model.SearchName" placeholder="Search by name" class="form-control d-inline w-25" />
+    <select name="pageSize" class="form form-control d-inline w-25">
+        @for (int? num = 5; num <= Model.CourseCount; num += 5)
+        {
+            if (@num == Model.SelectedPageSize)
+            {
+                <option value="@num" selected>@num</option>
+            }
+            if (num != Model.SelectedPageSize)
+            {
+                <option value="@num">@num</option>
+            }
+
+        }
+    </select>
+    <select name="CourseId" class="form-control d-inline w-25">
+        <option value="">All Courses</option>
+        @foreach (var Course in Model.Courses)
+        {
+            if (Course.Id == Model.CourseId)
+            {
+                <option value="@Course.Id" selected>@Course.Name</option>
+
+            }
+            else
+            {
+                <option value="@Course.Id">@Course.Name</option>
+            }
+        }
+    </select>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+
+<table class="table table-hover table-bordered">
+    <tr style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
+        <th>Name</th>
+        <th>Course Id</th>
+    </tr>
+    @foreach (var item in Model.Courses)
+    {<tr>
+       <td><option>@item.Name</option></td>
+      
+            <td><option>@item.Id</option></td>
+           
+            <td>
+                <a href="/Courses/WarningDelete/@item.Id" class="btn btn-danger">Delete</a>
+            </td>
+            <td>
+                <a href="/Courses/Edit/@item.Id" class="btn btn-success">Edit</a>
+            </td>
+       </tr>
+    }
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?searchName=@Model.SearchName&pageSize=@Model.SelectedPageSize&page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+
+        
+
+    
+  

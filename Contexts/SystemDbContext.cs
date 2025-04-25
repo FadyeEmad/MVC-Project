@@ -15,5 +15,7 @@ namespace MVC_Project.Models
         }
         public DbSet<Students> Students { get; set; }
         public DbSet<Departments> Departments { get; set; }
+        public DbSet <Courses> Courses { get; set; }
+        public DbSet <StuCrsRes> StuCrsRes { get; set; }
     }
 }

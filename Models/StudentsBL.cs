@@ -39,7 +39,7 @@ namespace MVC_Project.Models
                 studentDP.Department = student.Department;
                 context.SaveChanges();
             }
-           
         }
+
     }
 }

@@ -20,6 +20,6 @@ namespace MVC_Project.Models
         public ICollection<Students> Students { get; set; } = new HashSet<Students>();
         public ICollection<Courses> Courses { get; set; } = new HashSet<Courses>();
 
-
+        
     }
 }
