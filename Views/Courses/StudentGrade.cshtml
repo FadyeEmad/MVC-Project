@@ -38,19 +38,18 @@
 
 <table class="table table-hover table-bordered">
     <tr style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif">
-        <th>StudentName</th>
-        <th>CourseTitle</th>
-        <th>Degree</th>
+        <th><b>StudentName</b></th>
+        <th><b>CourseTitle</b></th>
+        <th><b>Degree</b></th>
     </tr>
 
     @foreach (var item in Model.Students)
     {
         <tr>
             <td><option>@item.StudentName </option></td>
-
             <td><option>@item.CourseTitle </option>
             <td>
-                <option style="color:@item.DegreeColor">@item.Degree  </option>
+                <option style="background-color:@item.DegreeColor ; color : white ; border :groove ; width : 40px ;"><b> @item.Degree </b> </option>
 
         </td>
         </tr>

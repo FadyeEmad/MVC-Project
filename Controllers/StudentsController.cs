@@ -1,15 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_Project.Models;
+using MVC_Project.Repositories;
 using MVC_Project.ViewModels;
 
 namespace MVC_Project.Controllers
 {
     public class StudentsController : Controller
     {
-        DepartmentsBL departmentsBL = new DepartmentsBL();
-            StudentsBL studentsBL = new StudentsBL();
-        SystemDbContext context = new SystemDbContext();
+        IStudentsRepository studentsRepository;
+        IDepartmentsRepository departmentsRepository;
+        public StudentsController(IStudentsRepository studentsRepository , IDepartmentsRepository departmentsRepository)
+        {
+            this.departmentsRepository = departmentsRepository;
+            this.studentsRepository = studentsRepository;
+        }
+
         //Students/ShowAll
         //public IActionResult ShowAll()
         //{
@@ -19,7 +25,7 @@ namespace MVC_Project.Controllers
         public IActionResult ShowAll(string? searchName, int? departmentId, int? pageSize, int page = 1)
         {
             int finalPageSize = pageSize ?? 10;
-            var allStudents = studentsBL.GetAll();
+            var allStudents = studentsRepository.GetAll();
             if (!string.IsNullOrEmpty(searchName))
             {
                 allStudents = allStudents
@@ -43,7 +49,7 @@ namespace MVC_Project.Controllers
                 Students = StudentsOnPage,
                 SearchName = searchName,
                 DepartmentId = departmentId,
-                Departments = departmentsBL.GetAll(),
+                Departments = departmentsRepository.GetAll(),
                 CurrentPage = page,
                 StudentsCount= TotalStudents,
                 SelectedPageSize = finalPageSize,
@@ -62,13 +68,13 @@ namespace MVC_Project.Controllers
             ViewData["status"] = status;
             ViewData["Rate"] = Rate;
             ViewData["Skills"] = Skills;
-            Students student = studentsBL.GetById(id);
+            Students student = studentsRepository.GetById(id);
             return View("ShowDetails", student);
         }
         //Students/DetailsVW?id=1
         public IActionResult DetailsVW(int id)
         {
-            Students StuModel = studentsBL.GetById(id);
+            Students StuModel = studentsRepository.GetById(id);
             int Rate = 58;
             string status = "C";
             List<string> Skills = new List<string>() { "Leadership", "Communication" };
@@ -84,25 +90,22 @@ namespace MVC_Project.Controllers
         public IActionResult Add()
         {
             StudentWithDepartmentsList SWDT = new StudentWithDepartmentsList();
-            List<Departments> DepartmentsList = departmentsBL.GetAll();
+            List<Departments> DepartmentsList = departmentsRepository.GetAll();
             SWDT.DepartmentList = DepartmentsList;
             return View("Add" ,SWDT);
         }
         [HttpPost]
         public IActionResult SaveAdd(Students StudentFromReq)
         {
-            //Students student =new Students();
-            //student.StuCrsRes=StudentFromReq.StuCrsRes;
-            //student.Age = StudentFromReq.Age;
-            //student.Name = StudentFromReq.Name;
-            //student.Departmentid = StudentFromReq.Departmentid;
 
             if (ModelState.IsValid== true)
             {
-                studentsBL.SaveAdd(StudentFromReq);
-               return RedirectToAction(nameof(ShowAll));
+                studentsRepository.SaveAdd(StudentFromReq);
+                TempData["NotificationAdded"] = $"Employees With Name {StudentFromReq.Name} and Id {StudentFromReq.Id} Is Added";
+                return RedirectToAction(nameof(ShowAll));
+
             }
-            var departments = departmentsBL.GetAll();
+            var departments = departmentsRepository.GetAll();
             StudentWithDepartmentsList ReturnStudent = new StudentWithDepartmentsList
             {
                 //Students student =new Students();
@@ -117,16 +120,14 @@ namespace MVC_Project.Controllers
         }
         public IActionResult Delete(Students StudentFromReq)
         {
-            studentsBL.SaveDelete(StudentFromReq);
-            int maxId = context.Departments.Any() ? context.Departments.Max(d => d.Id) : 0;
-            context.Database.ExecuteSqlRaw($"DBCC CHECKIDENT ('Students', RESEED, {maxId})");
+            studentsRepository.SaveDelete(StudentFromReq);
             return RedirectToAction(nameof(ShowAll));
         }
         public IActionResult Edit(int id)
         {
             StudentWithDepartmentsList SWDT = new StudentWithDepartmentsList();
-            Students oldstudent = studentsBL.GetById(id);
-            List<Departments> DepartmentsList = departmentsBL.GetAll() ;
+            Students oldstudent = studentsRepository.GetById(id);
+            List<Departments> DepartmentsList = departmentsRepository.GetAll() ;
             SWDT.Age = oldstudent.Age;
             SWDT.Name = oldstudent.Name;
             SWDT.Department = oldstudent.Department;
@@ -141,20 +142,20 @@ namespace MVC_Project.Controllers
         {
             if (StudentFromReq.Name != null)
             {
-                Students EditStudent = studentsBL.GetById(id);
+                Students EditStudent = studentsRepository.GetById(id);
                 EditStudent.Name = StudentFromReq.Name;
                 EditStudent.Age = StudentFromReq.Age;
                 EditStudent.Departmentid = StudentFromReq.Departmentid;
-                studentsBL.SaveEdit(EditStudent);
+                studentsRepository.SaveEdit(EditStudent);
                 return RedirectToAction(nameof(ShowAll));
             }
-            List<Departments> DepartmentsList = departmentsBL.GetAll();
+            List<Departments> DepartmentsList = departmentsRepository.GetAll();
             StudentFromReq.DepartmentList = DepartmentsList;
             return View("Edit", StudentFromReq);
         }
         public IActionResult WarningDelete (int id)
         {
-            Students DeleteStudent = studentsBL.GetById(id);
+            Students DeleteStudent = studentsRepository.GetById(id);
             return View("WarningDelete", DeleteStudent);
         }
     }

@@ -1,29 +1,31 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_Project.Models;
+using MVC_Project.Repositories;
 using MVC_Project.ViewModels;
 
 namespace MVC_Project.Controllers
 {
     public class DepartmentsController : Controller
     {
-        DepartmentsBL departmentsBL = new DepartmentsBL();
-        StudentsBL studentsBL = new StudentsBL();
-        SystemDbContext context= new SystemDbContext();
+        IDepartmentsRepository departmentsRepository;
+        IStudentsRepository studentsRepository;
+        SystemDbContext context;
+        public DepartmentsController(IDepartmentsRepository departmentsRepository , IStudentsRepository studentsRepository )
+        {
+            context = new SystemDbContext();
+            this.departmentsRepository = departmentsRepository;
+            this.studentsRepository = studentsRepository;
+        }
+
         public IActionResult ShowAll()
         {
-            DepatmentsWithStudentsInfo DpStudents = departmentsBL.GetAllWithStudents();
+            DepatmentsWithStudentsInfo DpStudents = departmentsRepository.GetAllWithStudents();
             return View("ShowAll", DpStudents);
         }
         public IActionResult ShowById(int id)
         {
-          Departments Deparment = departmentsBL.GetById(id);
-            //DepatmentsWithStudentsInfo DpStudents = new DepatmentsWithStudentsInfo();
-            //DpStudents.Students=studentsBL.GetAll();
-            //DpStudents.MgrName=Deparment.MgrName;
-            //DpStudents.Name=Deparment.Name;
-            //DpStudents.Id=Deparment.Id;
-
+          Departments Deparment = departmentsRepository.GetById(id);
             
             return View("ShowById", Deparment);
         }
@@ -35,15 +37,14 @@ namespace MVC_Project.Controllers
         {
             if (ModelState.IsValid == true)
             {
-                context.Add(DepartmentFromReq);
-                context.SaveChanges();
+                departmentsRepository.SaveAdd(DepartmentFromReq);
                 return RedirectToAction("ShowAll");
             }
             return View("Add", DepartmentFromReq);
         }
         public IActionResult WarningDelete(int id)
         {
-            Departments DeleteDepartment = departmentsBL.GetById(id);
+            Departments DeleteDepartment = departmentsRepository.GetById(id);
             if (DeleteDepartment != null)
             {
                 return View("WarningDelete", DeleteDepartment);
@@ -55,26 +56,20 @@ namespace MVC_Project.Controllers
             var Department = context.Departments.Find(DepartmentFromReq.Id);
             if (Department != null)
             {
-                context.Departments.Remove(Department);
-                context.SaveChanges();
-                int maxId = context.Departments.Any() ? context.Departments.Max(d => d.Id) : 0;
-                context.Database.ExecuteSqlRaw($"DBCC CHECKIDENT ('Departments', RESEED, {maxId})");
+                departmentsRepository.SaveDelete(DepartmentFromReq);
             }
             return RedirectToAction(nameof(ShowAll));
         }
         public IActionResult Edit(int id)
         {
-            Departments department = departmentsBL.GetById(id);
+            Departments department = departmentsRepository.GetById(id);
             return View("Edit",department);
         }
         public IActionResult SaveEdit(Departments DepartmentFromReq)
         {
-            Departments OldDepartment= context.Departments.Find(DepartmentFromReq.Id);
             if (ModelState.IsValid==true)
             {
-                OldDepartment.Name = DepartmentFromReq.Name;
-                OldDepartment.MgrName = DepartmentFromReq.MgrName;
-                context.SaveChanges();
+                departmentsRepository.SaveEdit(DepartmentFromReq);
                 return RedirectToAction(nameof(ShowAll));
             }
             else

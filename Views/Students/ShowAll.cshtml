@@ -4,6 +4,14 @@
 }
     <a href="/Students/Add" class="btn btn-success mt-3 mb-3">New</a>
 
+    @if (@TempData["NotificationAdded"] != null)
+    {
+    <div class="alert alert-success">
+        @TempData["NotificationAdded"]
+    </div>
+    }
+
+
     <form method="get" asp-action="ShowAll" class="mb-3">
     <input type="text" name="searchName" value="@Model.SearchName" placeholder="Search by name" class="form-control d-inline w-25" />
      <select name="pageSize" class="form form-control d-inline w-25">
